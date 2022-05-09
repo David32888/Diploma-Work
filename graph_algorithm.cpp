@@ -100,39 +100,6 @@ public:
 
     std::vector<Arc> get_ordered_embadding() {
 
-        class Pwidget : public GraphWidget {
-        public:
-            Pwidget(PlanarityTesting& pt,  QWidget* p = nullptr) : GraphWidget(pt._graph, p), _this(pt) {
-                // _planar_graphs = my::graph_partitioning_in_planes(graph);
-                Initialize();
-                _scene->advance();
-            };
-            PlanarityTesting& _this;
-        protected:
-            void Initialize() {
-                using namespace my;
-                _scene->clear();
-                _m_vertex.clear();
-                _m_vertex.reserve(_graph.size());
-                for(const vertex_t v : _graph)
-                    _m_vertex.push_back(new GraphicsVertexItem(QString::number(v)));
-
-
-                for(const vertex_t v : GraphWidget::_graph)
-                    for (const edge_t e : Graph::vertex_iterator(GraphWidget::_graph, v)) {
-                        QColor color;
-                        Vertex& vertex = _this._m_vertex[e.second];
-                        if (_this._m_edge[e].side == Edge::Side::RIGHT)
-                            color = e == vertex.parent_edge ? Qt::black : Qt::red;
-                        else
-                            color = (e == vertex.parent_edge) ? Qt::magenta : Qt::blue;
-                        _m_edge[e] = new GraphicsEdgeItem(_m_vertex[e.first], _m_vertex[e.second]);
-                        _scene->addItem(_m_edge[e]);
-                    }
-                SetVertexPos();
-            }
-        };
-
         if (_is_planar == false)
             return {};
 
@@ -141,8 +108,7 @@ public:
         for (vertex_t v : _roots) {
             third_dfs_traversal(v, embd);
         }
-        // Pwidget* lfwidget = new Pwidget(*this); // ----------------
-        // lfwidget->show(); // -----------------
+
         return std::move(embd);
     }
 
